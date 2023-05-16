@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "587919971491",
+    "firebase_url": "https://dorossyproject-default-rtdb.firebaseio.com",
+    "project_id": "dorossyproject",
+    "storage_bucket": "dorossyproject.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:587919971491:android:8b2e9c839b181cc1fa1b16",
+        "android_client_info": {
+          "package_name": "com.example.dorossy"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "587919971491-gr00kee68qaqkodhst1invp6ifgurb13.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDHYdypcF7CcFEn8E9yYqwzKKbpnhgmLY0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "587919971491-gr00kee68qaqkodhst1invp6ifgurb13.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
