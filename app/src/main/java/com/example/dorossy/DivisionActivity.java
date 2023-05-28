@@ -8,17 +8,24 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
 
 public class DivisionActivity extends AppCompatActivity {
 
-    ListView listView;
+    ListView divisionLV;
+    ArrayList<String> divisionArrayList = new ArrayList<>();
 
-    ArrayList<String> myList;
-
-    ArrayAdapter<String> adapter;
+    DatabaseReference ref;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,21 +35,47 @@ public class DivisionActivity extends AppCompatActivity {
         TextView selectionTextView = findViewById(R.id.selectionTextView);
         selectionTextView.setText(getIntent().getStringExtra("Grade"));
 
-        listView = findViewById(R.id.listView);
+        divisionLV = findViewById(R.id.listView);
 
-        myList = new ArrayList<>();
-        myList.add("شعبة علوم تجريبية");
-        myList.add("شعبة رياضيات");
-        myList.add("شعبة تقني رياضي");
-        myList.add("شعبة تسيير واقتصاد");
+        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(DivisionActivity.this, R.layout.text_color_layout, divisionArrayList);
 
-        adapter = new ArrayAdapter<String>(getApplicationContext(), R.layout.text_color_layout, myList);
-        listView.setAdapter(adapter);
+        ref = FirebaseDatabase.getInstance().getReference().child("Division");
 
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        ref.addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+                String value = snapshot.getValue(String.class);
+                divisionArrayList.add(value);
+                arrayAdapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+                arrayAdapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onChildRemoved(@NonNull DataSnapshot snapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
+        divisionLV.setAdapter(arrayAdapter);
+
+        divisionLV.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                String str = listView.getAdapter().getItem(i).toString();
+                String str = divisionLV.getAdapter().getItem(i).toString();
                 Intent intent = new Intent(getApplicationContext(), SubjectsActivity.class);
                 intent.putExtra("Division", str);
                 startActivity(intent);

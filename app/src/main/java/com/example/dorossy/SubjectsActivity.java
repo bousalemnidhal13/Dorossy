@@ -7,16 +7,26 @@ import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.dorossy.Adapters.SubjectsGVAdapter;
 import com.example.dorossy.Models.SubjectsModel;
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
 
 public class SubjectsActivity extends AppCompatActivity {
 
     GridView subjectsGridView;
+    ArrayList<SubjectsModel> subjectsModelArrayList = new ArrayList<SubjectsModel>();
+
+    DatabaseReference ref;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,19 +38,39 @@ public class SubjectsActivity extends AppCompatActivity {
 
         subjectsGridView = findViewById(R.id.GridViewSubjects);
 
-        ArrayList<SubjectsModel> subjectsModelArrayList = new ArrayList<SubjectsModel>();
-
-        subjectsModelArrayList.add(new SubjectsModel("رياضيات", R.drawable.book));
-        subjectsModelArrayList.add(new SubjectsModel("فيزياء", R.drawable.book));
-        subjectsModelArrayList.add(new SubjectsModel("علوم الطبيعة", R.drawable.book));
-        subjectsModelArrayList.add(new SubjectsModel("أدب عربي", R.drawable.book));
-        subjectsModelArrayList.add(new SubjectsModel("اجتماعيات", R.drawable.book));
-        subjectsModelArrayList.add(new SubjectsModel("فرنسية", R.drawable.book));
-        subjectsModelArrayList.add(new SubjectsModel("انجليزية", R.drawable.book));
-        subjectsModelArrayList.add(new SubjectsModel("تربية اسلامية", R.drawable.book));
-        subjectsModelArrayList.add(new SubjectsModel("تربية بدنية", R.drawable.book));
-
         SubjectsGVAdapter adapter = new SubjectsGVAdapter(this, subjectsModelArrayList);
+
+        ref = FirebaseDatabase.getInstance().getReference().child("Subject");
+
+        ref.addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+                String value = snapshot.getValue(String.class);
+                subjectsModelArrayList.add(new SubjectsModel(value, R.drawable.book));
+                adapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+                adapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onChildRemoved(@NonNull DataSnapshot snapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
         subjectsGridView.setAdapter(adapter);
 
         subjectsGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
