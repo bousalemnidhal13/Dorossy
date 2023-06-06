@@ -2,22 +2,12 @@ package com.example.dorossy;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
-import android.widget.Adapter;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.ListView;
-import android.widget.SearchView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.view.MenuItemCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -29,12 +19,9 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.Statement;
 import java.util.ArrayList;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements RecyclerViewAdapter.ItemClickListener {
 
     RecyclerView schoolRecyclerView;
     FloatingActionButton add_button;
@@ -54,8 +41,8 @@ public class MainActivity extends AppCompatActivity {
         schoolArrayList = new ArrayList<>();
 
         schoolRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        adapter = new RecyclerViewAdapter(schoolArrayList);
-
+        adapter = new RecyclerViewAdapter(this, schoolArrayList);
+        adapter.setClickListener(this);
 
         ref = FirebaseDatabase.getInstance().getReference().child("School");
 
@@ -95,9 +82,16 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Intent intent = new Intent(MainActivity.this, RegActivity.class);
                 startActivity(intent);
-                startActivity(intent);
             }
         });
     }
 
+    @Override
+    public void onItemClick(View view, int position) {
+//        Toast.makeText(this, "You clicked " + adapter.getItem(position) + " on row number " + position, Toast.LENGTH_SHORT).show();
+        String str = adapter.getItem(position);
+        Intent intent = new Intent(getApplicationContext(), GradesActivity.class);
+        intent.putExtra("School", str);
+        startActivity(intent);
+    }
 }
